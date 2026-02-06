@@ -2,6 +2,9 @@
 
 A lightweight macOS system tray application to manage and execute Bash commands.
 
+![Menu Bar Interface](docs/screenshots/menu_bar.png)
+*Quick access to all your commands from the system tray.*
+
 ## Features
 - **System Tray Presence:** Runs in the menu bar for quick access.
 - **On/Off Toggles:** Start and stop commands with a single click.
@@ -9,6 +12,9 @@ A lightweight macOS system tray application to manage and execute Bash commands.
 - **Persistence:** Commands and their states are saved and restored across restarts.
 - **Launch at Login:** Option to start the app automatically when you log in.
 - **Log Viewing:** See the last output of your commands in the settings window.
+
+![Settings Window](docs/screenshots/settings.png)
+*Manage commands and view logs.*
 
 ## How to Open in Xcode
 1. Open Xcode.
