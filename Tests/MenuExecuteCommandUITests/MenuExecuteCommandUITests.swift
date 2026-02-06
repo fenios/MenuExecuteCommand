@@ -6,31 +6,50 @@ final class MenuExecuteCommandUITests: XCTestCase {
 
     override func setUpWithError() throws {
         continueAfterFailure = false
-        // We must perform actor-isolated setup in a way that respects the base class
-        app = XCUIApplication()
+        
+        // Absolute path to the built binary
+        let binaryPath = "/Users/nano/Projectos/MenuExecuteCommand/.build/arm64-apple-macosx/debug/MenuExecuteCommand"
+        let executableURL = URL(fileURLWithPath: binaryPath)
+        
+        if FileManager.default.fileExists(atPath: binaryPath) {
+            app = XCUIApplication(url: executableURL)
+        } else {
+            // Fallback to bundle ID if path fails
+            app = XCUIApplication(bundleIdentifier: "com.fenios.MenuExecuteCommand")
+        }
+        
         app.launch()
     }
 
     func testCaptureScreenshots() throws {
-        // 1. Capture Menu Bar (Note: MenuBarExtra is tricky to access via UI tests in some environments)
-        // We simulate clicking the status item if possible, or just focus on the windows.
+        // 1. Capture Menu Bar Status Item
+        // Note: statusItems are part of the system-wide menu bar
+        let systemUI = XCUIApplication(bundleIdentifier: "com.apple.controlcenter")
+        let menuBarItem = systemUI.statusItems["MenuCommand"]
         
-        let menuBar = app.menuBars.statusItems["MenuCommand"]
-        if menuBar.exists {
-            menuBar.click()
+        if menuBarItem.waitForExistence(timeout: 5) {
+            menuBarItem.click()
             let screenshot = XCUIScreen.main.screenshot()
             let attachment = XCTAttachment(screenshot: screenshot)
+            attachment.name = "menu_bar"
             attachment.lifetime = .keepAlways
             add(attachment)
         }
 
         // 2. Open Settings and capture
-        app.menuBars.statusItems["MenuCommand"].menuItems["Settings..."].click()
-        
+        // We might need to click the app menu item "Settings..."
+        // In some macOS versions, MenuBarExtra shows up in the app's own process too
+        let appMenu = app.menuBars.statusItems["MenuCommand"]
+        if appMenu.exists {
+            appMenu.click()
+            app.menuItems["Settings..."].click()
+        }
+
         let settingsWindow = app.windows["Settings"]
         if settingsWindow.waitForExistence(timeout: 5) {
             let screenshot = settingsWindow.screenshot()
             let attachment = XCTAttachment(screenshot: screenshot)
+            attachment.name = "settings"
             attachment.lifetime = .keepAlways
             add(attachment)
         }

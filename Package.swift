@@ -7,14 +7,14 @@ let package = Package(
         .macOS(.v14)
     ],
     dependencies: [],
-        targets: [
-            .executableTarget(
-                name: "MenuExecuteCommand",
-                dependencies: [],
-                path: "Sources/MenuExecuteCommand",
-                resources: []
-            ),
-                    .testTarget(
+                targets: [
+                    .executableTarget(
+                        name: "MenuExecuteCommand",
+                        dependencies: [],
+                        path: "Sources/MenuExecuteCommand",
+                        resources: []
+                    ),
+                                .testTarget(
                         name: "MenuExecuteCommandTests",
                         dependencies: ["MenuExecuteCommand"],
                         path: "Tests/MenuExecuteCommandTests"
