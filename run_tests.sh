@@ -6,19 +6,25 @@ echo "🚀 Iniciando pruebas para MenuExecuteCommand..."
 echo "📦 Compilando..."
 swift build
 
-# 2. Ejecutar Unit Tests
-echo "🧪 Ejecutando Unit Tests (Swift Testing)..."
+# 2. Registrar la App en el sistema (Necesario para que el Bundle ID funcione)
+echo "🔗 Registrando Bundle ID..."
+APP_PATH=$(find .build -name MenuExecuteCommand -type f | head -n 1)
+# Abrimos y cerramos la app rápido para que LaunchServices la registre
+open "$APP_PATH"
+sleep 2
+pkill MenuExecuteCommand
+
+# 3. Ejecutar Unit Tests
+echo "🧪 Ejecutando Unit Tests..."
 swift test --filter MenuExecuteCommandTests
 
-# 3. Ejecutar UI Tests usando xcodebuild (única forma de habilitar el UI Host)
-echo "🖼️ Ejecutando UI Tests y capturando pantallas..."
-echo "Nota: Esto abrirá la aplicación y requerirá permisos de accesibilidad si es la primera vez."
-
-xcodebuild test 
-  -scheme MenuExecuteCommand 
-  -destination 'platform=macOS' 
-  -only-testing MenuExecuteCommandUITests 
-  -resultBundlePath ./TestResults.xcresult
+# 4. Ejecutar UI Tests usando xcodebuild
+echo "🖼️ Ejecutando UI Tests..."
+xcodebuild test \
+  -scheme MenuExecuteCommand \
+  -destination 'platform=macOS' \
+  -only-testing MenuExecuteCommandUITests \
+  -resultBundlePath ./TestResults.xcresult \
+  -derivedDataPath ./DerivedData
 
 echo "✅ Pruebas finalizadas."
-echo "📂 Las capturas están dentro de ./TestResults.xcresult (puedes abrirlo con Xcode)."

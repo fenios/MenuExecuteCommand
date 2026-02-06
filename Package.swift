@@ -15,8 +15,7 @@ let package = Package(
             name: "MenuExecuteCommand",
             dependencies: [],
             path: "Sources/MenuExecuteCommand",
-            resources: [],
-            infoPlist: "Sources/MenuExecuteCommand/Info.plist"
+            resources: []
         ),
         .testTarget(
             name: "MenuExecuteCommandTests",
