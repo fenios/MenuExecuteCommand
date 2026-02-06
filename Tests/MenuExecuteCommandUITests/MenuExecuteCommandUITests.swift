@@ -2,56 +2,67 @@ import XCTest
 
 @MainActor
 final class MenuExecuteCommandUITests: XCTestCase {
-    var app: XCUIApplication!
+    var app: XCUIApplication?
 
     override func setUpWithError() throws {
         continueAfterFailure = false
         
-        // Absolute path to the built binary
-        let binaryPath = "/Users/nano/Projectos/MenuExecuteCommand/.build/arm64-apple-macosx/debug/MenuExecuteCommand"
-        let executableURL = URL(fileURLWithPath: binaryPath)
+        // Initialize with bundle identifier. 
+        // Note: For this to work, the app must have been built/run at least once 
+        // so macOS registers the bundle identifier.
+        let bundleID = "com.fenios.MenuExecuteCommand"
+        let application = XCUIApplication(bundleIdentifier: bundleID)
         
-        if FileManager.default.fileExists(atPath: binaryPath) {
-            app = XCUIApplication(url: executableURL)
-        } else {
-            // Fallback to bundle ID if path fails
-            app = XCUIApplication(bundleIdentifier: "com.fenios.MenuExecuteCommand")
+        // Defensive check
+        if application.exists || true { // XCUIApplication init always returns an object, 'exists' check is for the process
+            self.app = application
+        }
+        
+        guard let app = self.app else {
+            XCTFail("Could not initialize XCUIApplication for bundle ID: \(bundleID)")
+            return
         }
         
         app.launch()
     }
 
     func testCaptureScreenshots() throws {
+        guard let app = self.app else { 
+            XCTFail("App not initialized")
+            return 
+        }
+
         // 1. Capture Menu Bar Status Item
-        // Note: statusItems are part of the system-wide menu bar
+        // We look for the item in the system-wide status bar
         let systemUI = XCUIApplication(bundleIdentifier: "com.apple.controlcenter")
         let menuBarItem = systemUI.statusItems["MenuCommand"]
         
         if menuBarItem.waitForExistence(timeout: 5) {
             menuBarItem.click()
+            
             let screenshot = XCUIScreen.main.screenshot()
             let attachment = XCTAttachment(screenshot: screenshot)
             attachment.name = "menu_bar"
             attachment.lifetime = .keepAlways
             add(attachment)
+        } else {
+            print("System tray icon 'MenuCommand' not found. Ensure the app is running and the icon is visible.")
         }
 
         // 2. Open Settings and capture
-        // We might need to click the app menu item "Settings..."
-        // In some macOS versions, MenuBarExtra shows up in the app's own process too
-        let appMenu = app.menuBars.statusItems["MenuCommand"]
-        if appMenu.exists {
-            appMenu.click()
-            app.menuItems["Settings..."].click()
-        }
-
-        let settingsWindow = app.windows["Settings"]
-        if settingsWindow.waitForExistence(timeout: 5) {
-            let screenshot = settingsWindow.screenshot()
-            let attachment = XCTAttachment(screenshot: screenshot)
-            attachment.name = "settings"
-            attachment.lifetime = .keepAlways
-            add(attachment)
+        // We try to trigger it via the menu item if we just clicked it
+        let settingsMenu = systemUI.menuItems["Settings..."]
+        if settingsMenu.waitForExistence(timeout: 2) {
+            settingsMenu.click()
+            
+            let settingsWindow = app.windows["Settings"]
+            if settingsWindow.waitForExistence(timeout: 5) {
+                let screenshot = settingsWindow.screenshot()
+                let attachment = XCTAttachment(screenshot: screenshot)
+                attachment.name = "settings"
+                attachment.lifetime = .keepAlways
+                add(attachment)
+            }
         }
     }
 }
