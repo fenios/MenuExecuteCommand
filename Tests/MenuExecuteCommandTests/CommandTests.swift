@@ -1,23 +1,30 @@
-import XCTest
+import Testing
+import Foundation
 @testable import MenuExecuteCommand
 
-final class CommandTests: XCTestCase {
-    func testCommandInitialization() {
+@Suite("Command Model and Store Tests")
+@MainActor
+struct CommandTests {
+    
+    @Test("Command initialization sets correct properties")
+    func commandInitialization() {
         let command = Command(name: "Test", script: "echo hello")
-        XCTAssertEqual(command.name, "Test")
-        XCTAssertEqual(command.script, "echo hello")
-        XCTAssertFalse(command.isEnabled)
+        #expect(command.name == "Test")
+        #expect(command.script == "echo hello")
+        #expect(command.isEnabled == false)
     }
     
-    func testCommandEquality() {
+    @Test("Command equality is based on ID")
+    func commandEquality() {
         let id = UUID()
         let cmd1 = Command(id: id, name: "A", script: "B")
         let cmd2 = Command(id: id, name: "C", script: "D")
-        XCTAssertEqual(cmd1, cmd2)
+        #expect(cmd1 == cmd2)
     }
     
-    func testStoreInitialLoad() {
+    @Test("Store loads default commands when empty")
+    func storeInitialLoad() {
         let store = CommandStore()
-        XCTAssertFalse(store.commands.isEmpty)
+        #expect(!store.commands.isEmpty)
     }
 }

@@ -1,10 +1,13 @@
 import XCTest
 
+@MainActor
 final class MenuExecuteCommandUITests: XCTestCase {
-    let app = XCUIApplication()
+    var app: XCUIApplication!
 
     override func setUpWithError() throws {
         continueAfterFailure = false
+        // We must perform actor-isolated setup in a way that respects the base class
+        app = XCUIApplication()
         app.launch()
     }
 

@@ -2,6 +2,7 @@ import Foundation
 import Observation
 
 @Observable
+@MainActor
 class CommandStore {
     var commands: [Command] = [] {
         didSet {
