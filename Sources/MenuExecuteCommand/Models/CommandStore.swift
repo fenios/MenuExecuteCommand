@@ -1,8 +1,9 @@
 import Foundation
-import SwiftUI
+import Observation
 
-class CommandStore: ObservableObject {
-    @Published var commands: [Command] = [] {
+@Observable
+class CommandStore {
+    var commands: [Command] = [] {
         didSet {
             save()
         }

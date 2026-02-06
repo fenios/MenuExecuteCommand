@@ -3,8 +3,8 @@ import ServiceManagement
 
 @main
 struct MenuExecuteCommandApp: App {
-    @StateObject private var store = CommandStore()
-    @StateObject private var runner = CommandRunner()
+    @State private var store = CommandStore()
+    @State private var runner = CommandRunner()
     
     init() {
         NSApplication.shared.setActivationPolicy(.accessory)
@@ -22,8 +22,8 @@ struct MenuExecuteCommandApp: App {
 }
 
 struct AppMenuView: View {
-    @ObservedObject var store: CommandStore
-    @ObservedObject var runner: CommandRunner
+    var store: CommandStore
+    var runner: CommandRunner
     
     var body: some View {
         Group {
@@ -85,7 +85,7 @@ struct AppMenuView: View {
 }
 
 struct SettingsView: View {
-    @ObservedObject var store: CommandStore
+    var store: CommandStore
     @State private var newCommandName = ""
     @State private var newCommandScript = ""
     

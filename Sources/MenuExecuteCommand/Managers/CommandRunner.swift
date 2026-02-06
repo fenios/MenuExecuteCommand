@@ -1,9 +1,10 @@
 import Foundation
-import Combine
+import Observation
 
-class CommandRunner: ObservableObject {
+@Observable
+class CommandRunner {
     private var processes: [UUID: Process] = [:]
-    @Published var runningCommandIds: Set<UUID> = []
+    var runningCommandIds: Set<UUID> = []
     
     func toggle(command: Command, onCompletion: @escaping (UUID, String) -> Void) {
         if runningCommandIds.contains(command.id) {
