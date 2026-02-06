@@ -14,11 +14,16 @@ let package = Package(
                 path: "Sources/MenuExecuteCommand",
                 resources: []
             ),
-            .testTarget(
-                name: "MenuExecuteCommandTests",
-                dependencies: ["MenuExecuteCommand"],
-                path: "Tests/MenuExecuteCommandTests"
+                    .testTarget(
+                        name: "MenuExecuteCommandTests",
+                        dependencies: ["MenuExecuteCommand"],
+                        path: "Tests/MenuExecuteCommandTests"
+                    ),
+                    .testTarget(
+                        name: "MenuExecuteCommandUITests",
+                        dependencies: ["MenuExecuteCommand"],
+                        path: "Tests/MenuExecuteCommandUITests"
+                    )
+                ]
             )
-        ]
-    )
-    
+            
