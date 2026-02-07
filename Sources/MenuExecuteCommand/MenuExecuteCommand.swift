@@ -88,6 +88,7 @@ struct SettingsView: View {
     var store: CommandStore
     @State private var newCommandName = ""
     @State private var newCommandScript = ""
+    @State private var validationMessage: String?
     
     var body: some View {
         VStack {
@@ -121,14 +122,27 @@ struct SettingsView: View {
             VStack {
                 TextField("Command Name", text: $newCommandName)
                 TextField("Bash Script", text: $newCommandScript)
+                    .onChange(of: newCommandScript) { oldValue, newValue in
+                        let result = ScriptValidator.validate(newValue)
+                        validationMessage = result.message
+                    }
+                
+                if let message = validationMessage {
+                    Text(message)
+                        .font(.caption)
+                        .foregroundColor(.red)
+                        .multilineTextAlignment(.leading)
+                }
+                
                 Button("Add Command") {
                     if !newCommandName.isEmpty && !newCommandScript.isEmpty {
                         store.commands.append(Command(name: newCommandName, script: newCommandScript))
                         newCommandName = ""
                         newCommandScript = ""
+                        validationMessage = nil
                     }
                 }
-                .disabled(newCommandName.isEmpty || newCommandScript.isEmpty)
+                .disabled(newCommandName.isEmpty || newCommandScript.isEmpty || validationMessage != nil)
             }
             .padding()
         }

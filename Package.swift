@@ -13,6 +13,10 @@ let package = Package(
             dependencies: [],
             path: "Sources/MenuExecuteCommand",
             resources: []
+        ),
+        .testTarget(
+            name: "MenuExecuteCommandTests",
+            dependencies: ["MenuExecuteCommand"]
         )
     ]
 )

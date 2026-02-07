@@ -15,6 +15,13 @@ class CommandRunner {
     }
     
     func start(command: Command, onCompletion: @escaping (UUID, String) -> Void) {
+        let validation = ScriptValidator.validate(command.script)
+        if !validation.isValid {
+            let errorMsg = "Blocked: \(validation.message ?? "Security violation")"
+            onCompletion(command.id, errorMsg)
+            return
+        }
+
         let process = Process()
         process.executableURL = URL(fileURLWithPath: "/bin/bash")
         process.arguments = ["-c", command.script]
